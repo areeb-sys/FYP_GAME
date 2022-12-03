@@ -14,14 +14,17 @@ public class OpponentFollowScript : MonoBehaviour
     }
     void Update()
     {
-        nav.SetDestination(target.position);
+        
+       
     }
 
-    /*void OnCollisionEnter(Collision collision)
+    void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.tag == "Player")
         {
             nav.SetDestination(target.position);
+
         }
-    }*/
+
+    }
 }
