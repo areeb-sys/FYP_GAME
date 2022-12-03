@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class PlayerController : MonoBehaviour
+public class MovementScript : MonoBehaviour
 {
 
     public float playerSpeed;
@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     private bool isMoving = false;
     private bool isSprinting = false;
     private float yRot;*/
+    public GameObject Player;
 
     //private Animator anim;
     private Rigidbody rigidBody;
@@ -48,24 +49,32 @@ public class PlayerController : MonoBehaviour
             //isMoving = true;
         }
 
-       /* if (Input.GetKeyDown(KeyCode.Space))
-        {
-            //transform.Translate(Vector3.up * jumpHeight);
-        }
-*/
+        /* if (Input.GetKeyDown(KeyCode.Space))
+         {
+             //transform.Translate(Vector3.up * jumpHeight);
+         }
+ */
         /*if (Input.GetAxisRaw("Sprint") > 0f)
         {
             playerSpeed = sprintSpeed;
             //isSprinting = true;
         }*/
-        else if (Input.GetAxisRaw("Sprint") < 1f)
+        /*else if (Input.GetAxisRaw("Sprint") < 1f)
         {
             playerSpeed = walkSpeed;
             //isSprinting = false;
-        }
+        }*/
 
         /*anim.SetBool("isMoving", isMoving);
         anim.SetBool("isSprinting", isSprinting);*/
 
+        
+
+    }
+
+    void OnCollisionEnter(Collision col)
+    {
+        //Check for a match with the specified name on any GameObject that collides with your GameObject
+        Debug.Log("Collison Detected");
     }
 }
