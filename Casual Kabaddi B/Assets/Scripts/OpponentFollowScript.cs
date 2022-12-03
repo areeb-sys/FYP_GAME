@@ -5,20 +5,23 @@ using UnityEngine.AI;
 
 public class OpponentFollowScript : MonoBehaviour
 {
-    public GameObject target;
-    NavMeshAgent agent;
+    public Transform target;
+    NavMeshAgent nav;
 
     void Start()
     {
-        agent = GetComponent<NavMeshAgent>();
+        nav = GetComponent<NavMeshAgent>();
     }
     void Update()
     {
-        agent.destination = target.transform.position;
+        nav.SetDestination(target.position);
     }
-    void OnTriggerEnter(Collider collision)
+
+    /*void OnCollisionEnter(Collision collision)
     {
-        if (collision.tag == "Player")
-            target = GameObject.FindGameObjectWithTag("Player");
-    }
+        if (collision.gameObject.tag == "Player")
+        {
+            nav.SetDestination(target.position);
+        }
+    }*/
 }
