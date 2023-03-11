@@ -11,7 +11,7 @@ public class OpponentScript : MonoBehaviour
 
     private void Start()
     {
-        animator = gameObject.GetComponent<Animator>();
+       animator = gameObject.GetComponent<Animator>();
         playerTransform = GameObject.FindWithTag("Player").transform;
     }
 
@@ -19,7 +19,7 @@ public class OpponentScript : MonoBehaviour
     {
         if (isFollowingPlayer)
         {
-            animator.SetBool("isMoving", true);
+           animator.SetBool("isMoving", true);
             direction = (playerTransform.position - transform.position).normalized;
             direction.y = 0;
             transform.position += direction * followSpeed * Time.deltaTime;

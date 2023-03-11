@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
 
 public class managCharCon : MonoBehaviour
@@ -19,6 +20,7 @@ public class managCharCon : MonoBehaviour
     private Vector3 v_movement;
     public float speed;
     private float gravity;
+    public Button dodge;
 
 
     // Start is called before the first frame update
@@ -31,6 +33,11 @@ public class managCharCon : MonoBehaviour
         _characterController = tempPlayr.GetComponent<CharacterController>();
         animator = meshPlayer.GetComponent<Animator>();
         joystick = GameObject.Find("imgJoystickBg").GetComponent<joystickManager>();
+
+        if (dodge == true)
+        {
+            IsDodgeing();
+        }
     }
 
     // Update is called once per frame
@@ -53,6 +60,9 @@ public class managCharCon : MonoBehaviour
         {
             animator.SetBool("isMoving", true);
         }
+       
+
+        
 
     }
 
@@ -77,5 +87,11 @@ public class managCharCon : MonoBehaviour
             meshPlayer.rotation = Quaternion.LookRotation(lookDir);
         }
         
+    }
+
+    public void IsDodgeing()
+    {
+        
+        animator.SetBool("isDodging", true);
     }
 }
