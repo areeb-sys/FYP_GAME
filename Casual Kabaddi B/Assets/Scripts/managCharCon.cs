@@ -7,7 +7,7 @@ public class managCharCon : MonoBehaviour
 {
     //character controller componenet
     private CharacterController _characterController;
-    private Animator animator;
+    public Animator animator;
     private joystickManager joystick;
     
 
@@ -34,10 +34,6 @@ public class managCharCon : MonoBehaviour
         animator = meshPlayer.GetComponent<Animator>();
         joystick = GameObject.Find("imgJoystickBg").GetComponent<joystickManager>();
 
-        if (dodge == true)
-        {
-            IsDodgeing();
-        }
     }
 
     // Update is called once per frame
@@ -89,9 +85,10 @@ public class managCharCon : MonoBehaviour
         
     }
 
-    public void IsDodgeing()
+    public void IsDodging()
     {
-        
+        Debug.Log("Inside IsDodgeing");
         animator.SetBool("isDodging", true);
+        
     }
 }

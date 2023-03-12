@@ -60,6 +60,7 @@
     <Compile Include="Assets\Joystick Pack\Scripts\Editor\DynamicJoystickEditor.cs" />
     <Compile Include="Assets\Joystick Pack\Scripts\Editor\FloatingJoystickEditor.cs" />
     <Compile Include="Assets\Joystick Pack\Scripts\Editor\JoystickEditor.cs" />
+    <Compile Include="Assets\Editor\FIndMissingScripts.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

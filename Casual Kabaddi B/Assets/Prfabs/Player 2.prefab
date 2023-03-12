@@ -2702,6 +2702,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   followSpeed: 0.03
+  animator: {fileID: 7886462951493141187}
 --- !u!1 &7559225196257945451
 GameObject:
   m_ObjectHideFlags: 0
