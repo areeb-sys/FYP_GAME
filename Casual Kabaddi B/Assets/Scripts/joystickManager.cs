@@ -23,7 +23,7 @@ public class joystickManager : MonoBehaviour, IDragHandler, IPointerDownHandler,
         {
             PosInp.x = PosInp.x / (imgJoystickbg.rectTransform.sizeDelta.x);
             PosInp.y = PosInp.y / (imgJoystickbg.rectTransform.sizeDelta.y);
-            Debug.Log(PosInp.x.ToString() + "/" + PosInp.y.ToString());
+           // Debug.Log(PosInp.x.ToString() + "/" + PosInp.y.ToString());
         }
 
         if(PosInp.magnitude > 1.0f)
