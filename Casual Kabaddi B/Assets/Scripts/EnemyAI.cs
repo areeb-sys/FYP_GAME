@@ -82,7 +82,7 @@ public class EnemyAI : MonoBehaviour
     private void ChasePlayer()
     {
         agent.SetDestination(player.position);
-        anim.SetBool("isMoving",true);
+        anim.SetBool("isWalking",true);
         Debug.Log("Animation started");
 
     }
