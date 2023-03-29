@@ -363,7 +363,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 6345495479864570528}
-  speed: 0.03
+  maxSpeed: 5
   dodge: {fileID: 152739352}
 --- !u!1 &705507993
 GameObject:
@@ -804,14 +804,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.12731968, y: -0, z: -0, w: 0.99186176}
-  m_LocalPosition: {x: -1.06, y: 2.18, z: -10.76}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.06, y: 2.18, z: -11.21}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 14.629, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &963194229
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -824,7 +824,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97c4421a88d44534d83a688414ff818e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 2146456241}
+  target: {fileID: 4404600395823187403}
+  smoothSpeed: 0.125
+  offset: {x: -0.33, y: 1.72, z: -2.62}
 --- !u!1 &1068568040
 GameObject:
   m_ObjectHideFlags: 0
@@ -990,7 +992,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 6345495479864570528}
-  speed: 0
+  maxSpeed: 0.01
   dodge: {fileID: 152739352}
 --- !u!4 &1252062322
 Transform:
@@ -1201,7 +1203,7 @@ CharacterController:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Height: 2
+  m_Height: 1.76
   m_Radius: 0.29
   m_SlopeLimit: 45
   m_StepOffset: 0.3
@@ -1216,7 +1218,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2146456241}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.3872, y: 0.34, z: -6.69}
+  m_LocalPosition: {x: 0.3872, y: 0.31, z: -6.69}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1348,6 +1350,26 @@ PrefabInstance:
     - target: {fileID: 2531606759949389062, guid: 68f7fcc5cfb6f31498f1fee4c6b80a2c, type: 3}
       propertyPath: m_Layer
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2706593308039187000, guid: 68f7fcc5cfb6f31498f1fee4c6b80a2c, type: 3}
+      propertyPath: m_AABB.m_Center.x
+      value: 0.09067613
+      objectReference: {fileID: 0}
+    - target: {fileID: 2706593308039187000, guid: 68f7fcc5cfb6f31498f1fee4c6b80a2c, type: 3}
+      propertyPath: m_AABB.m_Center.y
+      value: 0.48260266
+      objectReference: {fileID: 0}
+    - target: {fileID: 2706593308039187000, guid: 68f7fcc5cfb6f31498f1fee4c6b80a2c, type: 3}
+      propertyPath: m_AABB.m_Center.z
+      value: 0.09723527
+      objectReference: {fileID: 0}
+    - target: {fileID: 2706593308039187000, guid: 68f7fcc5cfb6f31498f1fee4c6b80a2c, type: 3}
+      propertyPath: m_AABB.m_Extent.y
+      value: 0.05538845
+      objectReference: {fileID: 0}
+    - target: {fileID: 2706593308039187000, guid: 68f7fcc5cfb6f31498f1fee4c6b80a2c, type: 3}
+      propertyPath: m_AABB.m_Extent.z
+      value: 0.17614558
       objectReference: {fileID: 0}
     - target: {fileID: 2717144561169294469, guid: 68f7fcc5cfb6f31498f1fee4c6b80a2c, type: 3}
       propertyPath: m_Layer
@@ -1621,6 +1643,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 8103058500190520257, guid: 68f7fcc5cfb6f31498f1fee4c6b80a2c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.08
+      objectReference: {fileID: 0}
     - target: {fileID: 8233068061809933709, guid: 68f7fcc5cfb6f31498f1fee4c6b80a2c, type: 3}
       propertyPath: m_Layer
       value: 3
@@ -1671,7 +1697,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 116
+  m_Constraints: 84
   m_CollisionDetection: 0
 --- !u!95 &6345495479864570528 stripped
 Animator:
@@ -2186,7 +2212,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 8146016201131966370}
-  player: {fileID: 2146456243}
+  player: {fileID: 4404600395823187403}
   whatIsGround:
     serializedVersion: 2
     m_Bits: 65
@@ -2194,11 +2220,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 9
   anim: {fileID: 8146016201131966373}
-  health: 120
-  walkPoint: {x: 0, y: 0, z: 0}
-  walkPointRange: 2
   timeBetweenAttacks: 0.5
-  sightRange: 0.1
+  sightRange: 10
   attackRange: 0
   playerInSightRange: 0
   playerInAttackRange: 0

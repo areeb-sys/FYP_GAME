@@ -1,9 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-public class joystickManager : MonoBehaviour, IDragHandler, IPointerDownHandler,IPointerUpHandler
+public class joystickManager : MonoBehaviour, IDragHandler, IPointerDownHandler, IPointerUpHandler
 {
     private Image imgJoystickbg;
     private Image imgJoystick;
@@ -23,18 +22,18 @@ public class joystickManager : MonoBehaviour, IDragHandler, IPointerDownHandler,
         {
             PosInp.x = PosInp.x / (imgJoystickbg.rectTransform.sizeDelta.x);
             PosInp.y = PosInp.y / (imgJoystickbg.rectTransform.sizeDelta.y);
-           // Debug.Log(PosInp.x.ToString() + "/" + PosInp.y.ToString());
+            // Debug.Log(PosInp.x.ToString() + "/" + PosInp.y.ToString());
         }
 
-        if(PosInp.magnitude > 1.0f)
+        if (PosInp.magnitude > 1.0f)
         {
             PosInp = PosInp.normalized;
-        }    
+        }
         //joystick Movement
         imgJoystick.rectTransform.anchoredPosition = new Vector2(
             PosInp.x * (imgJoystickbg.rectTransform.sizeDelta.x / 2),
             PosInp.y * (imgJoystickbg.rectTransform.sizeDelta.y / 2));
-    } 
+    }
 
     public void OnPointerDown(PointerEventData eventData)
     {
@@ -53,7 +52,7 @@ public class joystickManager : MonoBehaviour, IDragHandler, IPointerDownHandler,
         if (PosInp.x != 0)
             return PosInp.x;
         else
-            return Input.GetAxis("Horizontal"); 
+            return Input.GetAxis("Horizontal");
     }
 
     public float inputVertical()

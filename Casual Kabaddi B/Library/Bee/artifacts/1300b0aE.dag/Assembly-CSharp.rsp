@@ -366,8 +366,6 @@
 "Assets/Scripts/EnemyAI.cs"
 "Assets/Scripts/joystickManager.cs"
 "Assets/Scripts/managCharCon.cs"
-"Assets/Scripts/OpponentScript.cs"
-"Assets/Scripts/SwipeManager.cs"
 "Assets/TextMesh Pro/Examples & Extras/Scripts/Benchmark01.cs"
 "Assets/TextMesh Pro/Examples & Extras/Scripts/Benchmark01_UGUI.cs"
 "Assets/TextMesh Pro/Examples & Extras/Scripts/Benchmark02.cs"
