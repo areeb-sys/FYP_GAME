@@ -19,11 +19,11 @@ public class EnemyAI : MonoBehaviour
     public float sightRange, attackRange;
     public bool playerInSightRange, playerInAttackRange;
 
+    public bool isGrab;
 
     private void Start()
     {
         anim = GetComponent<Animator>();
-        anim.SetBool("isIdle", true);
     }
     private void Awake()
     {
@@ -58,6 +58,8 @@ public class EnemyAI : MonoBehaviour
             // Stop moving and play idle animation
             anim.SetBool("isWalking", false);
             anim.SetBool("isIdle", true);
+            isGrabbing();
+
         }
     }
 
@@ -89,6 +91,17 @@ public class EnemyAI : MonoBehaviour
     private void ResetAttack()
     {
         alreadyAttacked = false;
+    }
+
+    void isGrabbing()
+    {
+        isGrab = true;
+        if(isGrab)
+        {
+            anim.SetBool("isGrabing", true);
+        }
+        isGrab = false;
+
     }
 
     private void OnTriggerEnter(Collider other)

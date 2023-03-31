@@ -16,6 +16,7 @@ public class managCharCon : MonoBehaviour
     public float maxSpeed = .1f; // max speed the player can move
     private float gravity;
     private bool isDodge;
+    private bool isTouch;
     public Button dodge;
 
     // Start is called before the first frame update
@@ -38,11 +39,11 @@ public class managCharCon : MonoBehaviour
 
         if (inputX == 0f && inputZ == 0f)
         {
-            animator.SetBool("isMoving", false);
+            animator.SetBool("isWalking", false);
         }
         else
         {
-            animator.SetBool("isMoving", true);
+            animator.SetBool("isWalking", true);
         }
     }
 
@@ -85,5 +86,15 @@ public class managCharCon : MonoBehaviour
         else
             animator.SetBool("isDodging", false);
 
+    }
+    public void IsTouching()
+    {
+        isTouch = true;
+        if (isTouch)
+        {
+            Debug.Log("Inside IsTouching");
+            animator.SetBool("isTouching", true);
+            isTouch = false;
+        }
     }
 }
