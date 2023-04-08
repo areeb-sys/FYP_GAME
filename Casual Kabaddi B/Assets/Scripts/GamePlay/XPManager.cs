@@ -24,7 +24,7 @@ public class XPManager : MonoBehaviour
     private void Start()
     {
         // Load XP from player preferences or other storage mechanism
-        xp = PlayerPrefs.GetInt("XP", 0);
+        xp = PlayerPrefs.GetInt("XP", 10);
 
         // Set game mode based on XP
         if (xp < 500)
