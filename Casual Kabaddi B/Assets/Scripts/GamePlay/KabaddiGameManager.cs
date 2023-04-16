@@ -12,20 +12,79 @@ public class KabaddiGameManager : MonoBehaviour
     public TMP_Text tossResultText;
 
     public GameObject headsButton, tailsButton;
-    public GameObject raidButton, defendButton;
 
     private bool playerTeamGetsFirstRaid;
 
     public XPManager xPManager;
 
     public GameObject MenuPanel;
-    public GameObject playerPrefab;
+    public Player playerPrefab;
     public Transform playerSpawnPoint;
     public GameObject enemyPrefab;
     public Transform enemySpawnPoint;
 
-    public List<GameObject> PlayersList;
+    public List<Player> PlayersList;
     public List<GameObject> EnemiesList;
+
+    public GameObject ControlPanel;
+
+    public joystickManager joystick;
+    [SerializeField]
+    private Player currentPlayer;
+    private Transform currentCameraTarget;
+
+    public CamFollow camFollow;
+    public Vector3 EnemyCameraOffset;
+    public Vector3 PlayerCameraOffset;
+
+    public bool isChasing;
+    public GameObject CrossLine;
+
+    public GameObject TabsPanel;
+    public TMP_Text tabsText;
+
+    public static KabaddiGameManager instance;
+
+    private void Awake()
+    {
+        if(instance == null)
+        {
+            instance = this;
+        }
+    }
+
+    private void Update()
+    {
+        float inputX = joystick.inputHorizontal();
+        float inputZ = joystick.inputVertical();
+
+        
+
+        if (currentPlayer != null)
+        {
+            if (inputX == 0f && inputZ == 0f)
+            {
+                currentPlayer.Walk(false);
+            }
+            else
+            {
+                currentPlayer.Walk(true);
+            }
+
+            Vector3 movement = new Vector3(inputX, 0, inputZ).normalized;
+
+            if (movement != Vector3.zero)
+            {
+                // Calculate the speed based on the joystick position
+
+                currentPlayer._characterController.Move(movement * Time.deltaTime);
+
+                // Rotate the meshPlayer based on the movement direction
+                Vector3 lookDir = new Vector3(movement.x, 0, movement.z);
+                currentPlayer.transform.rotation = Quaternion.LookRotation(lookDir);
+            }
+        }
+    }
 
     public void StartGame()
     {
@@ -34,7 +93,6 @@ public class KabaddiGameManager : MonoBehaviour
 
         AskPlayerForHeadTail();
     }
-
 
     private void AskPlayerForHeadTail()
     {
@@ -60,28 +118,10 @@ public class KabaddiGameManager : MonoBehaviour
             playerTeamGetsFirstRaid = false;
             tossResultText.text = "Opponent won the toss and choose to raid first. Defend!";
         }
-
-        // Assign player and opponent team members
-        //AssignTeamMembers(playerTeam, 7);
-        //AssignTeamMembers(opponentTeam, 7);
-
         StartCoroutine(AssignTeamMembers());
     }
-
     IEnumerator AssignTeamMembers()
     {
-        //// Iterate through the team's child objects and activate the first 'numMembers' members
-        //for (int i = 0; i < team.transform.childCount; i++)
-        //{
-        //    if (i < numMembers)
-        //    {
-        //        team.transform.GetChild(i).gameObject.SetActive(true);
-        //    }
-        //    else
-        //    {
-        //        team.transform.GetChild(i).gameObject.SetActive(false);
-        //    }
-        //}
         yield return new WaitForSeconds(2f);
         tossResultText.text = "Making Teams Formation. Please Wait...";
         xPManager.gameMode = GameMode.Hard;
@@ -99,13 +139,52 @@ public class KabaddiGameManager : MonoBehaviour
         }
         yield return new WaitForSeconds(1.5f);
         HeadTailPanel.SetActive(false);
+
+        //if(playerTeamGetsFirstRaid)
+        //{
+        //    Raid();
+        //}
+        //else
+        //{
+        //    Defend();
+        //}
+
+        Raid();
     }
+
+    private void Raid()
+    {
+        if(PlayersList.Count > 0)
+        {
+            currentPlayer = PlayersList[0];
+            PlayersList.RemoveAt(0);
+        }
+        currentPlayer.ActiveObject.SetActive(true);
+        ControlPanel.SetActive(true);
+
+        currentCameraTarget = currentPlayer.transform;
+        camFollow.target = currentCameraTarget;
+        camFollow.offset = PlayerCameraOffset;
+        camFollow.transform.localEulerAngles = new Vector3(10, 0, 0);
+    }
+
+    private void Defend()
+    {
+        GameObject enemy;
+        enemy = EnemiesList[0];
+        ControlPanel.SetActive(false);
+        currentCameraTarget = enemy.transform;
+        camFollow.target = currentCameraTarget;
+        camFollow.offset = EnemyCameraOffset;
+        camFollow.transform.localEulerAngles = new Vector3(45, 0, 0);
+    }
+
 
     public bool DoesPlayerTeamGetFirstRaid()
     {
         return playerTeamGetsFirstRaid;
     }
-
+    #region Spawning
     void SpawnEasyMode()
     {
         //Ddestroy Previous Players and Clear the List
@@ -119,7 +198,8 @@ public class KabaddiGameManager : MonoBehaviour
         for (int i = 0; i < 7; i++)
         {
             Vector3 position = playerSpawnPoint.position + Vector3.right * i * 2;
-            GameObject player =  Instantiate(playerPrefab, position, playerSpawnPoint.rotation);
+            Player player =  Instantiate(playerPrefab, position, playerSpawnPoint.rotation) as Player;
+            Debug.Log("Spawnning Player ");
             PlayersList.Add(player);
         }
 
@@ -135,6 +215,8 @@ public class KabaddiGameManager : MonoBehaviour
         {
             Vector3 position = enemySpawnPoint.position + Vector3.left * i * 2;
             GameObject enemy = Instantiate(enemyPrefab, position, enemySpawnPoint.rotation);
+            Debug.Log("Spawnning Enemy ");
+
             EnemiesList.Add(enemy);
         }
 
@@ -166,7 +248,7 @@ public class KabaddiGameManager : MonoBehaviour
                 position += playerSpawnPoint.right * 1;
             }
             position += Quaternion.Euler(0f, currentAngle, 0f) * (Vector3.forward * curveRadius);
-            GameObject player = Instantiate(playerPrefab, position, playerSpawnPoint.rotation);
+            Player player = Instantiate(playerPrefab, position, playerSpawnPoint.rotation) as Player;
             PlayersList.Add(player);
             currentAngle += angleIncrement;
         }
@@ -188,7 +270,7 @@ public class KabaddiGameManager : MonoBehaviour
             }
             position += Quaternion.Euler(0f, currentAngle, 0f) * (Vector3.forward * curveRadius);
             GameObject enemy = Instantiate(enemyPrefab, position, enemySpawnPoint.rotation);
-            PlayersList.Add(enemy);
+            EnemiesList.Add(enemy);
             currentAngle += angleIncrement;
         }
     }
@@ -219,7 +301,7 @@ public class KabaddiGameManager : MonoBehaviour
                 position += playerSpawnPoint.right * 1;
             }
             position += Quaternion.Euler(0f, currentAngle, 0f) * (Vector3.back * curveRadius);
-            GameObject player = Instantiate(playerPrefab, position, playerSpawnPoint.rotation);
+            Player player = Instantiate(playerPrefab, position, playerSpawnPoint.rotation) as Player;
             PlayersList.Add(player);
             currentAngle += angleIncrement;
         }
@@ -241,11 +323,28 @@ public class KabaddiGameManager : MonoBehaviour
             }
             position += Quaternion.Euler(0f, currentAngle, 0f) * (Vector3.back * curveRadius);
             GameObject enemy = Instantiate(enemyPrefab, position, enemySpawnPoint.rotation);
-            PlayersList.Add(enemy);
+            EnemiesList.Add(enemy);
             currentAngle += angleIncrement;
         }
     }
+    #endregion
 
+    public void Dodge()
+    {
+        currentPlayer.IsDodging();
+    }
+
+    public void Touch()
+    {
+        currentPlayer.IsTouching();
+    }
+
+    public void ShowTabPanel()
+    {
+        var random = Random.Range(0, 6);
+        tabsText.text = "Tab " + 6 + "times";
+            
+    }
     public void Exit()
     {
         Application.Quit();
