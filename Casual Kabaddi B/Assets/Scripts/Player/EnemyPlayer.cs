@@ -6,13 +6,40 @@ using System.Collections;
 public class EnemyPlayer : KabadiPlayer
 {
     public bool ischasing = false;
+    public bool isRaiding = false;
+    public bool isTouched = false;
     public NavMeshAgent agent;
+    public Vector3 spawnpoint;
+
 
     public Transform target;
 
+    private void Start()
+    {
+        spawnpoint = this.transform.position;
+    }
+
     public void Raid()
     {
-        Debug.Log("Raiding....");
+        isRaiding = true;
+        animator.SetBool("isIdle", false);
+        animator.SetBool("isWalking", true);
+        agent.SetDestination(target.position);
+    }
+
+    public void RaidReturn()
+    {
+        Debug.Log("Raid Return");
+        animator.SetBool("isWalking", true);
+        animator.SetBool("isIdle", false);
+        agent.SetDestination(KabaddiGameManager.instance.CrossLine.transform.position);
+    }
+
+    public void ChaseFailed()
+    {
+        animator.SetBool("isWalking", false);
+        animator.SetBool("isIdle", true);
+        ischasing = false;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -21,20 +48,17 @@ public class EnemyPlayer : KabadiPlayer
         {
             Debug.Log("Chasing...");
             target = other.transform;
-            ischasing = true;
+            Invoke("Chase", 2f);
             KabaddiGameManager.instance.isChasing = true;
             KabaddiGameManager.instance.CrossLine.SetActive(true);
+            KabaddiGameManager.instance.chasingAI = this;
         }
     }
-    //private void OnCollisionEnter(Collision collision)
-    //{
-    //    if (collision.gameObject.tag == "Player")
-    //    {
-    //        Debug.Log("Chasing...");
-    //        target = collision.transform;
-    //        ischasing = true;
-    //    }
-    //}
+
+    public void Chase()
+    {
+        ischasing = true;
+    }
 
     private void Update()
     {
@@ -55,23 +79,36 @@ public class EnemyPlayer : KabadiPlayer
                 KabaddiGameManager.instance.ShowTabPanel();
             }
         }
+        if(isRaiding)
+        {
+            
+            Debug.LogFormat("Target : {0} , Remaining Distance : {1}", target, agent.remainingDistance);
+            if (!isTouched)
+            {                
+                if (agent.remainingDistance <= agent.stoppingDistance && !isTouched)
+                {
+                    // Stop moving and play idle animation
+                    animator.SetBool("isWalking", false);
+                    animator.SetBool("isIdle", false);
+                    animator.SetTrigger("Touch");
+                    agent.isStopped = true;
+                    isTouched = true;
+                    isRaiding = false;
+                    RaidReturn();
+                }
+            }
 
+        }
     }
 
-    void Grab()
+    public void ResetPlayer()
     {
-        
+        isRaiding = false;
+        isTouched = false;
+        ischasing = false;
+        transform.position = spawnpoint;
+        //transform.rotation = spawnpoint;
     }
     bool grabbing = false;
-    //IEnumerator Grab()
-    //{
-    //    Debug.Log("Grab Him WAit ...");
-    //    yield return new WaitForSeconds(0.2f);
-    //    if (agent.remainingDistance <= agent.stoppingDistance)
-    //    {
-    //        //grabbing = true;
-    //        Debug.Log("Grab Him ...");
-    //        animator.SetBool("Grab", true);
-    //    }
-    //}
+    
 }

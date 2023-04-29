@@ -20,11 +20,11 @@ public class KabaddiGameManager : MonoBehaviour
     public GameObject MenuPanel;
     public Player playerPrefab;
     public Transform playerSpawnPoint;
-    public GameObject enemyPrefab;
+    public EnemyPlayer enemyPrefab;
     public Transform enemySpawnPoint;
 
     public List<Player> PlayersList;
-    public List<GameObject> EnemiesList;
+    public List<EnemyPlayer> EnemiesList;
 
     public GameObject ControlPanel;
 
@@ -42,6 +42,10 @@ public class KabaddiGameManager : MonoBehaviour
 
     public GameObject TabsPanel;
     public TMP_Text tabsText;
+    public EnemyPlayer chasingAI;
+
+    public TMP_Text playerPointText;
+    public TMP_Text opponentPointsText;
 
     public static KabaddiGameManager instance;
 
@@ -52,7 +56,6 @@ public class KabaddiGameManager : MonoBehaviour
             instance = this;
         }
     }
-
     private void Update()
     {
         float inputX = joystick.inputHorizontal();
@@ -85,7 +88,6 @@ public class KabaddiGameManager : MonoBehaviour
             }
         }
     }
-
     public void StartGame()
     {
         // Ask the player to choose heads or tails
@@ -149,15 +151,17 @@ public class KabaddiGameManager : MonoBehaviour
         //    Defend();
         //}
 
-        Raid();
+        Defend();
     }
-
+    public bool isPlayerRaiding = false;
+    public int playerCounter = 0;
     private void Raid()
     {
-        if(PlayersList.Count > 0)
+        isPlayerRaiding = true;
+        if (PlayersList.Count > 0)
         {
-            currentPlayer = PlayersList[0];
-            PlayersList.RemoveAt(0);
+            currentPlayer = PlayersList[playerCounter];
+            //PlayersList.RemoveAt(0);
         }
         currentPlayer.ActiveObject.SetActive(true);
         ControlPanel.SetActive(true);
@@ -166,19 +170,34 @@ public class KabaddiGameManager : MonoBehaviour
         camFollow.target = currentCameraTarget;
         camFollow.offset = PlayerCameraOffset;
         camFollow.transform.localEulerAngles = new Vector3(10, 0, 0);
+        //playerCounter++;
     }
-
+    public int enemyCounter = 0;
     private void Defend()
     {
-        GameObject enemy;
-        enemy = EnemiesList[0];
+        isPlayerRaiding = false;
+        EnemyPlayer enemy;
+        enemy = EnemiesList[enemyCounter];
+        //EnemiesList.RemoveAt(0);
         ControlPanel.SetActive(false);
+        enemy.target = PlayersList[Random.Range(0, PlayersList.Count - 1)].transform;
+        enemy.Raid();
         currentCameraTarget = enemy.transform;
         camFollow.target = currentCameraTarget;
         camFollow.offset = EnemyCameraOffset;
         camFollow.transform.localEulerAngles = new Vector3(45, 0, 0);
-    }
 
+        //enemyCounter++;
+    }
+    public int points = 0;
+    public void RaidComplete()
+    {
+        CrossLine.SetActive(false);
+        points += 50;
+        isPlayerRaiding = false;
+        chasingAI.ChaseFailed();
+        Debug.Log("Raid Complete");
+    }
 
     public bool DoesPlayerTeamGetFirstRaid()
     {
@@ -214,7 +233,7 @@ public class KabaddiGameManager : MonoBehaviour
         for (int i = 0; i < 7; i++)
         {
             Vector3 position = enemySpawnPoint.position + Vector3.left * i * 2;
-            GameObject enemy = Instantiate(enemyPrefab, position, enemySpawnPoint.rotation);
+            EnemyPlayer enemy = Instantiate(enemyPrefab, position, enemySpawnPoint.rotation);
             Debug.Log("Spawnning Enemy ");
 
             EnemiesList.Add(enemy);
@@ -269,7 +288,7 @@ public class KabaddiGameManager : MonoBehaviour
                 position += (enemySpawnPoint.right * -1f) * 1;
             }
             position += Quaternion.Euler(0f, currentAngle, 0f) * (Vector3.forward * curveRadius);
-            GameObject enemy = Instantiate(enemyPrefab, position, enemySpawnPoint.rotation);
+            EnemyPlayer enemy = Instantiate(enemyPrefab, position, enemySpawnPoint.rotation);
             EnemiesList.Add(enemy);
             currentAngle += angleIncrement;
         }
@@ -322,7 +341,7 @@ public class KabaddiGameManager : MonoBehaviour
                 position += (enemySpawnPoint.right * 1f) * 1;
             }
             position += Quaternion.Euler(0f, currentAngle, 0f) * (Vector3.back * curveRadius);
-            GameObject enemy = Instantiate(enemyPrefab, position, enemySpawnPoint.rotation);
+            EnemyPlayer enemy = Instantiate(enemyPrefab, position, enemySpawnPoint.rotation);
             EnemiesList.Add(enemy);
             currentAngle += angleIncrement;
         }
@@ -338,12 +357,17 @@ public class KabaddiGameManager : MonoBehaviour
     {
         currentPlayer.IsTouching();
     }
-
+    public int tabsTimes = 0;
     public void ShowTabPanel()
     {
         var random = Random.Range(0, 6);
-        tabsText.text = "Tab " + 6 + "times";
-            
+        tabsTimes = random;
+        tabsText.text = "Tab " + tabsTimes + " times to ungrab";
+        TabsPanel.SetActive(true);
+    }
+    public void Tab()
+    {
+        tabsTimes--;
     }
     public void Exit()
     {
