@@ -10,13 +10,18 @@ public class CamFollow : MonoBehaviour
 
     public Vector3 offset;
 
+    public bool isFollow = false;
+
     private void FixedUpdate()
     {
-        Vector3 desiredPos = target.position + offset;
-        Vector3 smoothedPos = Vector3.Lerp(transform.position, desiredPos, smoothSpeed);
-        transform.position = smoothedPos;
+        if(isFollow)
+        {
+            Vector3 desiredPos = target.position + offset;
+            Vector3 smoothedPos = Vector3.Lerp(transform.position, desiredPos, smoothSpeed);
+            transform.position = smoothedPos;
+        }
 
-        
+
     }
 
 }

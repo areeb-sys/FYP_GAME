@@ -4,40 +4,55 @@ using UnityEngine.UI;
 
 public enum GameMode
 {
-    Easy,
-    Medium,
-    Hard
+    E,
+    M,
+    H
 }
 
 public class XPManager : MonoBehaviour
 {
     public int xp = 0;
-
-    public GameMode gameMode = GameMode.Easy;
+    public string userName;
+    public GameMode gameMode = GameMode.E;
 
     public Image xpBarImage;
     public TMP_Text xpText;
     public TMP_Text modeText;
 
+    public GameObject NamePanel;
+
+    public TMP_Text userName_Text;
+    public TMP_InputField userName_InputField;
+
     private int maxXp;
 
     private void Start()
     {
-        // Load XP from player preferences or other storage mechanism
-        xp = PlayerPrefs.GetInt("XP", 10);
+
+        if(PlayerPrefs.GetInt("XP", 0) == 0)
+        {
+            NamePanel.SetActive(true);
+            xp = 10;
+            PlayerPrefs.SetInt("XP", xp);
+        }
+        else
+        {
+            userName = PlayerPrefs.GetString("UserName");
+            userName_Text.text = userName;
+        }
 
         // Set game mode based on XP
         if (xp < 500)
         {
-            gameMode = GameMode.Easy;
+            gameMode = GameMode.E;
         }
         else if (xp < 2000)
         {
-            gameMode = GameMode.Medium;
+            gameMode = GameMode.M;
         }
         else
         {
-            gameMode = GameMode.Hard;
+            gameMode = GameMode.H;
         }
         UpdateXPBar();
     }
@@ -50,15 +65,15 @@ public class XPManager : MonoBehaviour
         // Update game mode based on new XP
         if (xp < 500)
         {
-            gameMode = GameMode.Easy;
+            gameMode = GameMode.E;
         }
         else if (xp < 2000)
         {
-            gameMode = GameMode.Medium;
+            gameMode = GameMode.M;
         }
         else if (xp < 3000)
         {
-            gameMode = GameMode.Hard;
+            gameMode = GameMode.H;
         }
         if (xp > 3000) xp = 3000;
         // Save XP to player preferences or other storage mechanism
@@ -80,14 +95,27 @@ public class XPManager : MonoBehaviour
     {
         switch (gameMode)
         {
-            case GameMode.Easy:
+            case GameMode.E:
                 return 500;
-            case GameMode.Medium:
-                return 1500;
-            case GameMode.Hard:
+            case GameMode.M:
+                return 2000;
+            case GameMode.H:
                 return 3000;
             default:
                 return 0;
+        }
+    }
+
+    public void SetUserName()
+    {
+        if(userName_InputField.text != null)
+        {
+            userName = userName_InputField.text;
+            userName_Text.text = userName;
+
+            PlayerPrefs.SetString("UserName", userName);
+
+            NamePanel.SetActive(false);
         }
     }
 }

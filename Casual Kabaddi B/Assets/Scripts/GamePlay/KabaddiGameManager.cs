@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class KabaddiGameManager : MonoBehaviour
 {
@@ -30,23 +31,51 @@ public class KabaddiGameManager : MonoBehaviour
 
     public joystickManager joystick;
     [SerializeField]
-    private Player currentPlayer;
+    public Player currentPlayer;// Current Player for Raid and Chasing
     private Transform currentCameraTarget;
 
     public CamFollow camFollow;
     public Vector3 EnemyCameraOffset;
     public Vector3 PlayerCameraOffset;
 
-    public bool isChasing;
     public GameObject CrossLine;
 
     public GameObject TabsPanel;
     public TMP_Text tabsText;
-    public EnemyPlayer chasingAI;
+    public EnemyPlayer chasingAI;// Opponent 
 
+    public int playerPoints = 0;
     public TMP_Text playerPointText;
+    public int opponentPoints = 0;
     public TMP_Text opponentPointsText;
 
+    public GameObject RaidCompletePanel;
+    public TMP_Text raidCompleteText;
+
+    public GameObject kabadiStadium;
+    public GameObject soccerStadium;
+
+    public GameObject gamePanel;
+    public GameObject grabButton;
+
+    [Header("Teams Details")]
+    public TMP_Text[] playerNames;
+    public TMP_Text[] opponentNames;
+    public GameObject TeamsPanel;
+
+    [Header("Game End ")]
+    public TMP_Text totalPlayerSuccessfullRaids_Text;
+    public TMP_Text totalOpponentSuccessfullRaids_Text;
+    public TMP_Text resultText;
+    public TMP_Text xpRewardText;
+    public GameObject GameEndPanel;
+
+    public List<string> RandomNamesList = new List<string>();
+
+    public AudioSource musicAudioSource;
+    public Slider musicSlider; 
+    public AudioSource kabadiCountAudioSource;
+    public TMP_Text kabadiCountText;
     public static KabaddiGameManager instance;
 
     private void Awake()
@@ -56,6 +85,10 @@ public class KabaddiGameManager : MonoBehaviour
             instance = this;
         }
     }
+    private void Start()
+    {
+        SetMusicSlider(PlayerPrefs.GetFloat("MusicSlider", 0.5f));
+    }
     private void Update()
     {
         float inputX = joystick.inputHorizontal();
@@ -63,7 +96,7 @@ public class KabaddiGameManager : MonoBehaviour
 
         
 
-        if (currentPlayer != null)
+        if (currentPlayer != null && currentPlayer.canMove)
         {
             if (inputX == 0f && inputZ == 0f)
             {
@@ -114,58 +147,109 @@ public class KabaddiGameManager : MonoBehaviour
         {
             playerTeamGetsFirstRaid = true;
             tossResultText.text = "You won the toss! You are raiding first.";
+            Debug.Log("You Won the Toss");
         }
         else
         {
             playerTeamGetsFirstRaid = false;
-            tossResultText.text = "Opponent won the toss and choose to raid first. Defend!";
+            tossResultText.text = "You loose the toss and choose to raid first. Defend!";
+            Debug.Log("You Lose the Toss");
         }
         StartCoroutine(AssignTeamMembers());
     }
     IEnumerator AssignTeamMembers()
     {
         yield return new WaitForSeconds(2f);
+        
         tossResultText.text = "Making Teams Formation. Please Wait...";
-        xPManager.gameMode = GameMode.Hard;
+        //xPManager.gameMode = GameMode.Hard;
         switch (xPManager.gameMode)
         {
-            case GameMode.Easy:
+            case GameMode.E:
                 SpawnEasyMode();
+                soccerStadium.SetActive(false);
+                kabadiStadium.SetActive(true);
                 break;
-            case GameMode.Medium:
+            case GameMode.M:
                 SpawnMediumMode();
+                soccerStadium.SetActive(false);
+                kabadiStadium.SetActive(true);
                 break;
-            case GameMode.Hard:
+            case GameMode.H:
                 SpawnHardMode();
+                soccerStadium.SetActive(true);
+                kabadiStadium.SetActive(false);
                 break;
         }
+
         yield return new WaitForSeconds(1.5f);
         HeadTailPanel.SetActive(false);
+        kabadiCountText.gameObject.SetActive(false);
+        TeamsPanel.SetActive(true);
+        grabButton.SetActive(false);
 
-        //if(playerTeamGetsFirstRaid)
-        //{
-        //    Raid();
-        //}
-        //else
-        //{
-        //    Defend();
-        //}
+        for (int i = 0; i < 7; i++)
+        {
+            //Captain Condition
+            if(i == 0)
+            {
+                PlayersList[i].playerName = xPManager.userName;
+            }
+            else
+            {
+                PlayersList[i].playerName = RandomNamesList[Random.Range(0, RandomNamesList.Count)];
+            }
 
-        Defend();
+            EnemiesList[i].playerName = RandomNamesList[Random.Range(0, RandomNamesList.Count)];
+
+            playerNames[i].text = PlayersList[i].playerName;
+            opponentNames[i].text = EnemiesList[i].playerName;
+
+            yield return new WaitForSeconds(0.5f);
+        }
+        kabadiCountText.gameObject.SetActive(true);
+        kabadiCountAudioSource.Play();
+        for (int i = 10; i >= 0; i--)
+        {
+            kabadiCountText.text = i.ToString();
+            yield return new WaitForSeconds(1f);
+        }
+
+        musicAudioSource.Stop();
+
+        TeamsPanel.SetActive(false);
+        gamePanel.SetActive(true);
+
+        yield return new WaitForSeconds(7f);
+
+        if (playerTeamGetsFirstRaid)
+        {
+            Raid();
+            Debug.Log("Raiding");
+        }
+        else
+        {
+            Defend();
+            Debug.Log("Defending..");
+        }
+
+        //Defend();
     }
     public bool isPlayerRaiding = false;
     public int playerCounter = 0;
     private void Raid()
     {
+        playerCounter++;
         isPlayerRaiding = true;
         if (PlayersList.Count > 0)
         {
-            currentPlayer = PlayersList[playerCounter];
+            currentPlayer = PlayersList[playerCounter - 1];
+            currentPlayer.canMove = true;
             //PlayersList.RemoveAt(0);
         }
         currentPlayer.ActiveObject.SetActive(true);
         ControlPanel.SetActive(true);
-
+        camFollow.isFollow = true;
         currentCameraTarget = currentPlayer.transform;
         camFollow.target = currentCameraTarget;
         camFollow.offset = PlayerCameraOffset;
@@ -175,28 +259,96 @@ public class KabaddiGameManager : MonoBehaviour
     public int enemyCounter = 0;
     private void Defend()
     {
+        camFollow.isFollow = true;
+        enemyCounter++;
         isPlayerRaiding = false;
-        EnemyPlayer enemy;
-        enemy = EnemiesList[enemyCounter];
+        //EnemyPlayer enemy;
+        chasingAI = EnemiesList[enemyCounter - 1];
         //EnemiesList.RemoveAt(0);
         ControlPanel.SetActive(false);
-        enemy.target = PlayersList[Random.Range(0, PlayersList.Count - 1)].transform;
-        enemy.Raid();
-        currentCameraTarget = enemy.transform;
+        var random = Random.Range(0, PlayersList.Count - 1);
+        currentPlayer = PlayersList[random];
+        chasingAI.target = PlayersList[random].transform;
+        chasingAI.Raid();
+        currentCameraTarget = chasingAI.transform;
         camFollow.target = currentCameraTarget;
         camFollow.offset = EnemyCameraOffset;
         camFollow.transform.localEulerAngles = new Vector3(45, 0, 0);
+
+        camFollow.isFollow = true;
 
         //enemyCounter++;
     }
     public int points = 0;
     public void RaidComplete()
     {
-        CrossLine.SetActive(false);
-        points += 50;
-        isPlayerRaiding = false;
-        chasingAI.ChaseFailed();
+        
+        RaidCompletePanel.SetActive(true);
+        if(isPlayerRaiding)
+        {
+            chasingAI.ChaseFailed();            
+            PlayersPoint();
+            currentPlayer.canMove = false;
+        }
+        else
+        {
+            chasingAI.RaidFailed();
+            OpponentsPoint();
+        }
         Debug.Log("Raid Complete");
+        raidCompleteText.text = "Raid Success!";
+        Invoke("SwitchRaid", 3f);
+    }
+    public int raidCounter = 0;
+    public void RaidFailed()
+    {
+        RaidCompletePanel.SetActive(true);
+        raidCompleteText.text = "Raid Failed!";
+        Invoke("SwitchRaid", 3f);
+    }
+
+    public void ResetEverything()
+    {
+        currentPlayer.Walk(false);
+        
+        CrossLine.SetActive(false);
+        TabsPanel.SetActive(false);
+        RaidCompletePanel.SetActive(false);
+        grabButton.SetActive(false);
+    }
+
+    private void SwitchRaid()
+    {
+        raidCounter++;
+        if(raidCounter == 14)
+        {
+            GameEnd();
+            return;
+        }
+        raidCompleteText.text = "Swtiching Turn";
+        Invoke("SwitchTurn", 1f);
+    }
+
+    private void SwitchTurn()
+    {
+        
+        ResetEverything();
+        foreach (var player in PlayersList)
+        {
+            player.ResetPlayer();
+        }
+        foreach(var opponent in EnemiesList)
+        {
+            opponent.ResetPlayer();
+        }
+        if (isPlayerRaiding)
+        {
+            Defend();
+        }
+        else
+        {
+            Raid();
+        }
     }
 
     public bool DoesPlayerTeamGetFirstRaid()
@@ -360,14 +512,87 @@ public class KabaddiGameManager : MonoBehaviour
     public int tabsTimes = 0;
     public void ShowTabPanel()
     {
-        var random = Random.Range(0, 6);
+        var random = Random.Range(3, 8);
         tabsTimes = random;
         tabsText.text = "Tab " + tabsTimes + " times to ungrab";
         TabsPanel.SetActive(true);
+        StartCoroutine(TabsCountDown());
+    }
+
+    IEnumerator TabsCountDown()
+    {
+        yield return new WaitForSeconds(3f);
+        if(tabsTimes > 0)
+        {
+            //OpponentsPoint();
+            RaidFailed();
+        }
     }
     public void Tab()
     {
         tabsTimes--;
+        if(tabsTimes <= 0)
+        {
+            //PlayersPoint();
+            TabsPanel.SetActive(false);
+
+            RaidComplete();
+        }
+        tabsText.text = "Tab " + tabsTimes + " times to ungrab";
+    }
+
+    public void PlayersPoint()
+    {
+        playerPoints++;
+        playerPointText.text = playerPoints + "";
+    }
+    public void OpponentsPoint()
+    {
+        opponentPoints++;
+        opponentPointsText.text = opponentPoints + "";
+    }
+
+    public void Grab()
+    {
+        chasingAI.RaidFailed();
+        RaidFailed();
+    }
+
+    public void GameEnd()
+    {
+        //Show Stats here
+        camFollow.isFollow = false;
+        musicAudioSource.Play();
+        var gainedXP = 0;
+        if(playerPoints > opponentPoints)
+        {
+            resultText.text = "You Win";
+            gainedXP = 25;
+        }
+        else if(playerPoints == opponentPoints)
+        {
+            resultText.text = "Draw";
+            gainedXP = 5;
+        }
+        else
+        {
+            resultText.text = "You Lose";
+            gainedXP = 5;
+        }
+        xpRewardText.text = string.Format("XP : {0} + {1}", xPManager.xp, gainedXP);
+        xPManager.AddXP(gainedXP);
+        GameEndPanel.SetActive(true);
+        Debug.Log(opponentPoints);
+        totalOpponentSuccessfullRaids_Text.text = opponentPoints.ToString();
+        totalPlayerSuccessfullRaids_Text.text = playerPoints.ToString();
+
+
+    }
+    public void SetMusicSlider(float value)
+    {
+        musicAudioSource.volume = value;
+        musicSlider.value = value;
+        PlayerPrefs.SetFloat("MusicSlider", value);
     }
     public void Exit()
     {

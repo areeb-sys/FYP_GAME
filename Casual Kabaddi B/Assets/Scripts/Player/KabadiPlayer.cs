@@ -10,6 +10,14 @@ public class KabadiPlayer : MonoBehaviour
 
     private bool isDodge;
     private bool isTouch;
+    public Vector3 spawnpoint;
+    public Quaternion spawnRotation;
+
+    private void Start()
+    {
+        spawnpoint = this.transform.position;
+        spawnRotation = this.transform.rotation;
+    }
 
     public void Walk(bool walking)
     {
@@ -38,5 +46,11 @@ public class KabadiPlayer : MonoBehaviour
         Debug.Log("Inside IsTouching");
         //animator.SetBool("isTouching", true);
         animator.SetTrigger("Touch");
+    }
+
+    public void ResetPosition()
+    {
+        transform.position = spawnpoint;
+        transform.rotation = spawnRotation;
     }
 }
