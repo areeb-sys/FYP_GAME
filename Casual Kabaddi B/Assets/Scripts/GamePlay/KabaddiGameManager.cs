@@ -598,4 +598,12 @@ public class KabaddiGameManager : MonoBehaviour
     {
         Application.Quit();
     }
+
+    public void Test()
+    {
+        foreach (var player in PlayersList)
+        {
+            player.ResetPosition();
+        }
+    }
 }

@@ -12,4 +12,9 @@ public class Player : KabadiPlayer
         ActiveObject.SetActive(false);
         ResetPosition();
     }
+    public void Position()
+    {
+        transform.position = spawnpoint;
+    }
+
 }

@@ -388,7 +388,7 @@ MonoBehaviour:
   joystick: {fileID: 1810411678}
   currentPlayer: {fileID: 0}
   camFollow: {fileID: 963194229}
-  EnemyCameraOffset: {x: 0, y: 4, z: -5}
+  EnemyCameraOffset: {x: 0, y: 6, z: -7}
   PlayerCameraOffset: {x: 0, y: 3, z: -4}
   CrossLine: {fileID: 2060697265}
   TabsPanel: {fileID: 250834500}
@@ -3876,6 +3876,7 @@ GameObject:
   - component: {fileID: 616776447}
   - component: {fileID: 616776449}
   - component: {fileID: 616776448}
+  - component: {fileID: 616776450}
   m_Layer: 5
   m_Name: Toss Panel
   m_TagString: Untagged
@@ -3942,6 +3943,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 616776446}
   m_CullTransparentMesh: 1
+--- !u!95 &616776450
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 616776446}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 2c0ad326d8da5e94c8a964ab1347e0df, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &664583912
 GameObject:
   m_ObjectHideFlags: 0
@@ -5389,6 +5410,7 @@ GameObject:
   - component: {fileID: 806734829}
   - component: {fileID: 806734831}
   - component: {fileID: 806734830}
+  - component: {fileID: 806734832}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -5454,6 +5476,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 806734828}
   m_CullTransparentMesh: 1
+--- !u!95 &806734832
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 806734828}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: faefaaeb7ac167c418a1364999bc1ce4, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &835002854
 GameObject:
   m_ObjectHideFlags: 0
@@ -8500,7 +8542,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.16037738, g: 0.16037738, b: 0.16037738, a: 0.27058825}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -10011,7 +10053,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Raid Cmplete!
+  m_text: Raid Complete!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -16050,6 +16092,7 @@ GameObject:
   - component: {fileID: 1985994342}
   - component: {fileID: 1985994344}
   - component: {fileID: 1985994343}
+  - component: {fileID: 1985994345}
   m_Layer: 5
   m_Name: Menu Panel
   m_TagString: Untagged
@@ -16117,6 +16160,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1985994341}
   m_CullTransparentMesh: 1
+--- !u!95 &1985994345
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1985994341}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 7f66acdfa950e954b87921fccf8eb8d5, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &1991855226
 GameObject:
   m_ObjectHideFlags: 0
